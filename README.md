@@ -2,6 +2,10 @@
 
 A browser game built with HTML5 Canvas, CSS, and JavaScript. No build step, no dependencies.
 
+**Live Demo:** [https://sagardeepak671.github.io/Spider-Man/](https://sagardeepak671.github.io/Spider-Man/)
+
+This deployment uses the updated `feature/Campaign-Mode` branch and includes the multi-world campaign.
+
 ## Run locally
 
 Open `index.html` in a desktop browser, or serve this directory with Python 3:
