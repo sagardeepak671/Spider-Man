@@ -3,25 +3,311 @@
 	src: url(../fonts/pixel.otf);
 }
 
-.spiderman-game-menu-container,
-.spiderman-game-menu-container * {
+@font-face {
+	font-family: SpidermanGameTitleFont;
+	src: url(../fonts/Adventure.ttf);
+}
+
+/* ------------------------------------------------------------------
+ * Wrapper: the game wraps the <canvas> in this element so that every
+ * menu overlay can sit exactly on top of the canvas.
+ * ------------------------------------------------------------------ */
+.spiderman-game-wrapper {
+	position: relative;
+	display: inline-block;
+	line-height: 0;
+	font-size: 0;
+}
+
+.spiderman-game-wrapper canvas {
+	display: block;
+}
+
+/* fitToWindow: the wrapper is scaled with transform so canvas and menus grow together */
+.spiderman-game-wrapper.is-fitted {
+	position: fixed;
+	transform-origin: 50% 50%;
+}
+
+.spiderman-game-wrapper.is-fitted canvas {
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;
+}
+
+.spiderman-game-overlay,
+.spiderman-game-overlay * {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 
 	-webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-    cursor: default;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	cursor: default;
 }
 
-.spiderman-game-menu-container {
+/* ------------------------------------------------------------------
+ * Generic overlay (main menu / pause / game over)
+ * ------------------------------------------------------------------ */
+.spiderman-game-overlay {
 	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 	display: none;
-	height: auto;
+	font-family: SpidermanGamePixelFont, Monospace, Helvetica, Arial;
+	color: white;
+	line-height: 1.4;
+	overflow: hidden;
+}
+
+.spiderman-game-overlay.is-visible {
+	display: block;
+}
+
+/* dark tint + corner web (drawn purely with CSS gradients) */
+.spiderman-game-overlay:before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	background:
+		repeating-radial-gradient(circle at 100% 0, transparent 0, transparent 26px, rgba(255, 255, 255, 0.09) 26px, rgba(255, 255, 255, 0.09) 28px),
+		repeating-conic-gradient(from 180deg at 100% 0, rgba(255, 255, 255, 0.09) 0deg, rgba(255, 255, 255, 0.09) 1deg, transparent 1deg, transparent 12deg);
+	-webkit-mask-image: radial-gradient(circle at 100% 0, #000 0, #000 120px, transparent 230px);
+	mask-image: radial-gradient(circle at 100% 0, #000 0, #000 120px, transparent 230px);
+}
+
+.spiderman-game-overlay-dim {
+	background: rgba(4, 6, 18, 0.72);
+}
+
+/* ------------------------------------------------------------------
+ * Main menu
+ * ------------------------------------------------------------------ */
+.spiderman-game-main-menu {
+	background: -webkit-linear-gradient(left, rgba(6, 8, 24, 0.96) 0%, rgba(6, 8, 24, 0.9) 45%, rgba(6, 8, 24, 0.25) 100%);
+	background: linear-gradient(to right, rgba(6, 8, 24, 0.96) 0%, rgba(6, 8, 24, 0.9) 45%, rgba(6, 8, 24, 0.25) 100%);
+}
+
+.spiderman-game-main-menu-inner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	padding: 20px 0 0 40px;
+}
+
+.spiderman-game-logo {
+	display: block;
+	width: 34px;
+	height: 34px;
+	margin-bottom: 4px;
+	image-rendering: pixelated;
+}
+
+.spiderman-game-title {
+	font-family: SpidermanGameTitleFont, SpidermanGamePixelFont, Impact, Helvetica, Arial;
+	font-size: 46px;
+	line-height: 1;
+	color: #e3201b;
+	letter-spacing: 1px;
+	text-shadow:
+		3px 3px 0 #1b2a6b,
+		5px 5px 0 rgba(0, 0, 0, 0.55);
+}
+
+.spiderman-game-subtitle {
+	font-size: 14px;
+	line-height: 1;
+	color: #7fb2ff;
+	letter-spacing: 3px;
+	margin: 8px 0 16px 3px;
+}
+
+/* ------------------------------------------------------------------
+ * Menu lists and buttons
+ * ------------------------------------------------------------------ */
+.spiderman-game-menu-list {
+	display: block;
+}
+
+.spiderman-game-menu-button {
+	position: relative;
+	display: block;
+	width: 236px;
+	padding: 7px 12px 7px 26px;
+	margin-bottom: 6px;
+	font-size: 15px;
+	line-height: 18px;
+	color: white;
+	background: rgba(179, 18, 26, 0.9);
+	border: 2px solid #e3201b;
+	border-left-width: 6px;
+	box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5);
+	text-align: left;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.spiderman-game-menu-button:before {
+	/* selection arrow */
+	content: "";
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	margin-top: -5px;
+	border: 5px solid transparent;
+	border-left: 8px solid white;
+	border-right: 0;
+	opacity: 0;
+}
+
+.spiderman-game-menu-button:hover,
+.spiderman-game-menu-button.is-selected {
+	background: #1b3a8a;
+	border-color: #7fb2ff;
+	color: white;
+}
+
+.spiderman-game-menu-button:hover:before,
+.spiderman-game-menu-button.is-selected:before {
+	opacity: 1;
+}
+
+.spiderman-game-menu-button:active {
+	-webkit-transform: translateY(2px);
+	transform: translateY(2px);
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.spiderman-game-menu-button.is-secondary {
+	background: rgba(10, 14, 40, 0.85);
+	border-color: #3c4f8a;
+}
+
+.spiderman-game-menu-button.is-secondary:hover,
+.spiderman-game-menu-button.is-secondary.is-selected {
+	background: #1b3a8a;
+	border-color: #7fb2ff;
+}
+
+.spiderman-game-badge {
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	margin-top: -8px;
+	font-size: 9px;
+	line-height: 16px;
+	padding: 0 6px;
+	color: #1b2a6b;
+	background: #ffd83d;
+	border-radius: 2px;
+	letter-spacing: 1px;
+}
+
+.spiderman-game-theme-list {
+	margin-bottom: 8px;
+}
+
+.spiderman-game-panel.is-wide.spiderman-game-theme-panel {
+	width: 440px;
+}
+
+.spiderman-game-theme-list .spiderman-game-menu-button {
+	display: inline-block;
+	width: 190px;
+	margin: 0 3px 6px;
+	padding: 7px 14px 7px 24px;   /* room on the right for the "current theme" dot */
+	font-size: 9px;
+	letter-spacing: 0;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.spiderman-game-theme-list .spiderman-game-menu-button.is-current {
+	border-color: #ffd83d;
+}
+
+.spiderman-game-theme-list .spiderman-game-menu-button.is-current:after {
+	content: "";
+	position: absolute;
+	right: 7px;
+	top: 50%;
+	margin-top: -3px;
+	width: 6px;
+	height: 6px;
+	background: #ffd83d;
+	border-radius: 50%;
+}
+
+.spiderman-game-theme-swatch {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	margin: 0 6px -3px 0;
+	border: 1px solid rgba(255, 255, 255, 0.6);
+	border-radius: 3px;
+}
+
+.spiderman-game-menu-hint {
+	font-size: 10px;
+	color: rgba(255, 255, 255, 0.55);
+	margin-top: 10px;
+	letter-spacing: 1px;
+}
+
+.spiderman-game-best-score {
+	position: absolute;
+	left: 40px;
+	bottom: 14px;
+	font-size: 11px;
+	color: #ffd83d;
+	letter-spacing: 1px;
+}
+
+/* small toggle buttons row (sound / music on main menu) */
+.spiderman-game-toggle-row {
+	margin-top: 6px;
+}
+
+.spiderman-game-toggle-row .spiderman-game-menu-button {
+	display: inline-block;
+	width: 108px;
+	margin-right: 5px;
+	font-size: 10px;
+	padding: 4px 6px 4px 18px;
+}
+
+.spiderman-game-toggle-row .spiderman-game-menu-button:before {
+	left: 7px;
+	border-width: 4px;
+	border-left-width: 6px;
+	margin-top: -4px;
+}
+
+/* ------------------------------------------------------------------
+ * Centered panels (pause / game over / campaign / controls)
+ * ------------------------------------------------------------------ */
+.spiderman-game-panel {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 320px;
+	padding: 18px 22px 20px;
+	background: rgba(8, 10, 30, 0.94);
+	border: 3px solid #e3201b;
+	box-shadow: 0 0 0 3px #1b2a6b, 0 12px 30px rgba(0, 0, 0, 0.7);
+	text-align: center;
 
 	-webkit-transform: translate(-50%, -50%);
 	-moz-transform: translate(-50%, -50%);
@@ -30,28 +316,661 @@
 	transform: translate(-50%, -50%);
 }
 
-.spiderman-game-menu-title {
-	text-align: center;
-	font-size: 20px;
-	line-height: 60px;
-	font-family: SpidermanGamePixelFont;
+.spiderman-game-panel.is-wide {
+	width: 420px;
+}
+
+.spiderman-game-panel .spiderman-game-menu-button {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+}
+
+.spiderman-game-panel-title {
+	font-family: SpidermanGameTitleFont, SpidermanGamePixelFont, Impact, Helvetica, Arial;
+	font-size: 30px;
+	line-height: 1;
+	color: #e3201b;
+	text-shadow: 2px 2px 0 #1b2a6b;
+	margin-bottom: 10px;
+}
+
+.spiderman-game-panel-title.is-blue {
+	color: #7fb2ff;
+	text-shadow: 2px 2px 0 #7a0c12;
+}
+
+.spiderman-game-panel-text {
+	font-size: 12px;
+	line-height: 1.6;
+	color: #d7dcf0;
+	margin: 0 0 12px;
+}
+
+.spiderman-game-panel-text strong {
+	color: #ffd83d;
+	font-weight: normal;
+}
+
+.spiderman-game-score-line {
+	font-size: 13px;
 	color: white;
+	margin-bottom: 12px;
+	letter-spacing: 1px;
+}
+
+.spiderman-game-score-line .spiderman-game-score {
+	color: #ffd83d;
+}
+
+.spiderman-game-results {
+	width: 230px;
+	margin: -4px auto 10px;
+	border-collapse: collapse;
+	font-size: 10px;
+	letter-spacing: 1px;
+	color: #d7dcf0;
+}
+
+.spiderman-game-results td {
+	padding: 3px 6px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	text-align: left;
+	white-space: nowrap;
+}
+
+.spiderman-game-results td:first-child {
+	color: #9aa3c7;
+}
+
+.spiderman-game-results td:nth-child(2) {
+	text-align: right;
+	color: white;
+}
+
+.spiderman-game-results td:last-child {
+	text-align: right;
+	color: #ffd83d;
+	width: 50px;
+}
+
+.spiderman-game-best-line {
+	font-size: 10px;
+	color: #ffd83d;
+	letter-spacing: 1px;
+	margin-bottom: 10px;
+}
+
+.spiderman-game-new-best {
+	display: none;
+	font-size: 11px;
+	color: #ffd83d;
+	letter-spacing: 2px;
+	margin: -6px 0 10px;
+}
+
+.spiderman-game-new-best.is-visible {
 	display: block;
-	padding: 5px;
 }
 
-.spiderman-game-menu-button {
-    line-height: 30px;
-    font-size: 15px;
-    text-align: center;
-    font-family: SpidermanGamePixelFont;
-    color: white;
+/* ------------------------------------------------------------------
+ * Campaign: level select tiles and stage results
+ * ------------------------------------------------------------------ */
+.spiderman-game-panel-title.is-gold {
+	color: #ffd83d;
+	text-shadow: 2px 2px 0 #e3201b;
 }
 
-.spiderman-game-menu-button:hover {
-    color: red;
+/* "WORLD N CLEARED!" is long: one line keeps the results panel (with its NEXT WORLD button) inside the screen */
+.spiderman-game-panel-title.is-world-clear {
+	font-size: 24px;
+	white-space: nowrap;
 }
 
-.spiderman-game-menu-button:active {
-	color: rgb(200, 0, 0);
+/* world tabs above the level grid (only with more than one world) */
+.spiderman-game-world-tabs {
+	display: block;
+	margin: -2px 0 8px;
+	white-space: nowrap;
+}
+
+.spiderman-game-panel .spiderman-game-world-tab {
+	display: inline-block;
+	width: 110px;
+	margin: 0 3px;
+	padding: 3px 6px 3px 16px;
+	font-size: 10px;
+	line-height: 14px;
+	text-align: center;
+	border-left-width: 2px;
+	color: #9aa3c7;
+}
+
+.spiderman-game-world-tab:before {
+	left: 6px;
+	border-width: 4px;
+	border-left-width: 6px;
+	margin-top: -4px;
+}
+
+.spiderman-game-panel .spiderman-game-world-tab.is-current {
+	color: white;
+	border-color: #ffd83d;
+}
+
+.spiderman-game-world-tab.is-world-cleared:after {
+	/* small check mark: the world's boss is beaten */
+	content: "";
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	width: 3px;
+	height: 7px;
+	margin-top: -5px;
+	border: solid #8ee27a;
+	border-width: 0 2px 2px 0;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+.spiderman-game-world-tab.is-world-locked {
+	color: #6b7190;
+	border-style: dashed;
+}
+
+.spiderman-game-world-tab.is-world-locked:after {
+	/* little padlock */
+	content: "";
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	width: 7px;
+	height: 6px;
+	margin-top: -2px;
+	border-radius: 1px;
+	-webkit-box-shadow: inset 0 0 0 1px #8a90ad;
+	box-shadow: inset 0 0 0 1px #8a90ad;
+	background: #8a90ad;
+}
+
+.spiderman-game-world-title {
+	font-size: 13px;
+	line-height: 1.3;
+	color: #7fb2ff;
+	letter-spacing: 2px;
+	margin: -4px 0 10px;
+}
+
+.spiderman-game-world-title span {
+	display: block;
+	font-size: 9px;
+	color: #9aa3c7;
+	letter-spacing: 1px;
+}
+
+.spiderman-game-level-grid {
+	display: block;
+	margin: 0 0 8px;
+	white-space: nowrap;
+}
+
+.spiderman-game-panel .spiderman-game-level-tile {
+	display: inline-block;
+	vertical-align: top;
+	width: 86px;
+	height: 84px;
+	margin: 0 3px 4px;
+	padding: 8px 4px 6px;
+	text-align: center;
+	white-space: normal;
+	border-left-width: 2px;
+	line-height: 1.2;
+}
+
+.spiderman-game-level-tile:before {
+	display: none;
+}
+
+.spiderman-game-level-tile.is-selected,
+.spiderman-game-level-tile:hover {
+	-webkit-transform: translateY(-2px);
+	transform: translateY(-2px);
+}
+
+.spiderman-game-level-number {
+	display: block;
+	font-family: SpidermanGameTitleFont, SpidermanGamePixelFont, Impact, Helvetica, Arial;
+	font-size: 24px;
+	line-height: 1;
+	color: white;
+	text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+.spiderman-game-level-name {
+	display: block;
+	height: 24px;
+	margin-top: 4px;
+	font-size: 8px;
+	line-height: 12px;
+	color: #d7dcf0;
+	letter-spacing: 0;
+	overflow: hidden;
+}
+
+.spiderman-game-level-status {
+	display: block;
+	margin-top: 4px;
+	font-size: 8px;
+	line-height: 12px;
+	letter-spacing: 1px;
+	color: #ffd83d;
+}
+
+.spiderman-game-level-tile.is-boss {
+	background: rgba(60, 10, 90, 0.9);
+	border-color: #a64dff;
+}
+
+.spiderman-game-level-tile.is-boss .spiderman-game-level-number {
+	color: #e4b8ff;
+}
+
+.spiderman-game-level-tile.is-cleared {
+	border-color: #ffd83d;
+}
+
+.spiderman-game-level-tile.is-cleared .spiderman-game-level-status {
+	color: #8ee27a;
+}
+
+.spiderman-game-level-tile.is-locked {
+	background: rgba(20, 22, 40, 0.85);
+	border-color: #3c4258;
+	color: #6b7190;
+	cursor: not-allowed;
+}
+
+.spiderman-game-level-tile.is-locked .spiderman-game-level-number,
+.spiderman-game-level-tile.is-locked .spiderman-game-level-name {
+	color: #6b7190;
+	text-shadow: none;
+}
+
+.spiderman-game-level-tile.is-locked .spiderman-game-level-status {
+	color: #8a90ad;
+}
+
+.spiderman-game-level-tile.is-locked .spiderman-game-level-status:before {
+	/* little padlock */
+	content: "";
+	display: inline-block;
+	width: 7px;
+	height: 6px;
+	margin: 0 4px -1px 0;
+	background: #8a90ad;
+	border-radius: 1px;
+	box-shadow: 0 -4px 0 -1px transparent;
+	border-top: 3px solid transparent;
+	-webkit-box-shadow: inset 0 0 0 1px #8a90ad;
+	box-shadow: inset 0 0 0 1px #8a90ad;
+}
+
+.spiderman-game-level-tile.is-locked.is-selected,
+.spiderman-game-level-tile.is-locked:hover {
+	background: rgba(30, 34, 60, 0.95);
+	border-color: #7fb2ff;
+}
+
+.spiderman-game-campaign-panel .spiderman-game-campaign-note {
+	min-height: 30px;
+	margin-bottom: 6px;
+	font-size: 9px;
+	line-height: 15px;
+}
+
+.spiderman-game-campaign-panel .spiderman-game-toggle-row .spiderman-game-menu-button {
+	width: 150px;
+	margin: 0 4px;
+	font-size: 11px;
+	padding: 6px 8px 6px 22px;
+}
+
+.spiderman-game-stage-line {
+	font-size: 10px;
+	color: #7fb2ff;
+	letter-spacing: 2px;
+	margin: -4px 0 8px;
+}
+
+.spiderman-game-complete-stats {
+	margin: -4px 0 10px;
+	font-size: 9px;
+	letter-spacing: 1px;
+	color: #9aa3c7;
+	white-space: nowrap;
+}
+
+.spiderman-game-complete-stats span {
+	display: inline-block;
+	margin: 0 5px;
+}
+
+.spiderman-game-complete-stats strong {
+	font-weight: normal;
+	color: white;
+}
+
+.spiderman-game-unlock-line {
+	font-size: 9px;
+	line-height: 1.5;
+	color: #8ee27a;
+	letter-spacing: 1px;
+	margin: -2px 0 8px;
+}
+
+.spiderman-game-pause-menu .spiderman-game-toggle-row .spiderman-game-menu-button,
+.spiderman-game-pause-menu .spiderman-game-toggle-row {
+	text-align: center;
+}
+
+.spiderman-game-pause-menu .spiderman-game-toggle-row .spiderman-game-menu-button {
+	width: 86px;
+	margin: 0 2px;
+	padding-left: 15px;
+	font-size: 9px;
+	text-align: left;
+}
+
+.spiderman-game-pause-menu .spiderman-game-toggle-row .spiderman-game-menu-button:before {
+	left: 5px;
+}
+
+.spiderman-game-coming-soon {
+	display: inline-block;
+	font-size: 16px;
+	color: #1b2a6b;
+	background: #ffd83d;
+	padding: 6px 14px;
+	margin: 4px 0 12px;
+	letter-spacing: 2px;
+	-webkit-transform: rotate(-3deg);
+	transform: rotate(-3deg);
+	box-shadow: 3px 3px 0 #e3201b;
+}
+
+/* ------------------------------------------------------------------
+ * Controls table (inside the "CONTROLS" panel)
+ * ------------------------------------------------------------------ */
+/* controls panel: a two column grid that always fits the game screen (scrolls inside as a last resort) */
+.spiderman-game-controls-panel.is-wide {
+	width: 600px;
+	max-height: 388px;
+	overflow-y: auto;
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+
+.spiderman-game-controls-panel .spiderman-game-panel-title {
+	margin-bottom: 8px;
+}
+
+.spiderman-game-controls {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: 0 0 6px;
+	text-align: left;
+}
+
+.spiderman-game-control {
+	display: flex;
+	align-items: center;
+	width: 49%;
+	min-height: 30px;
+	padding: 2px 0;
+	font-size: 9px;
+	line-height: 12px;
+	letter-spacing: 0;
+}
+
+.spiderman-game-control-keys {
+	flex: 0 0 82px;
+	text-align: right;
+	padding-right: 8px;
+	white-space: nowrap;
+}
+
+.spiderman-game-control-what {
+	flex: 1 1 auto;
+	white-space: normal;
+}
+
+.spiderman-game-controls-note {
+	margin: 2px 0 8px;
+	font-size: 9px;
+	line-height: 13px;
+}
+
+.spiderman-game-touch-help {
+	display: none;
+	margin-top: 2px;
+	padding-top: 6px;
+	border-top: 1px solid rgba(127, 178, 255, 0.3);
+}
+
+.spiderman-game-controls-panel.is-touch .spiderman-game-touch-help {
+	display: block;
+}
+
+/* on a touch device the on-screen buttons are what matters: the keyboard list makes room for them */
+.spiderman-game-controls-panel.is-touch .spiderman-game-keyboard-help {
+	display: none;
+}
+
+.spiderman-game-controls-panel.is-touch .spiderman-game-touch-help {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.spiderman-game-touch-help-title {
+	font-size: 10px;
+	color: #7fb2ff;
+	letter-spacing: 2px;
+	margin-bottom: 2px;
+}
+
+.spiderman-game-touch-chip {
+	display: inline-block;
+	min-width: 30px;
+	padding: 3px 6px;
+	font-size: 9px;
+	text-align: center;
+	color: white;
+	background: rgba(10, 14, 40, 0.6);
+	border: 2px solid rgba(255, 255, 255, 0.5);
+	border-radius: 10px;
+}
+
+.spiderman-game-key {
+	display: inline-block;
+	min-width: 20px;
+	height: 20px;
+	line-height: 20px;
+	padding: 0 5px;
+	margin: 0 2px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	text-align: center;
+	color: #333;
+	background: white;
+	border: 1px solid #ccc;
+	border-bottom: 3px solid #999;
+	border-radius: 3px;
+}
+
+/* developer mode toggle on the main menu */
+.spiderman-game-dev-button {
+	font-size: 11px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.spiderman-game-dev-button.is-dev-on {
+	border-color: #8ee27a;
+	color: #8ee27a;
+}
+
+/* ------------------------------------------------------------------
+ * Main menu: "click / tap anywhere for music" (browsers block sound until then)
+ * ------------------------------------------------------------------ */
+.spiderman-game-music-hint {
+	margin-top: 6px;
+	font-size: 9px;
+	letter-spacing: 1px;
+	color: #ffd83d;
+	animation: spiderman-game-blink 1.4s steps(2, start) infinite;
+}
+
+@keyframes spiderman-game-blink {
+	to { visibility: hidden; }
+}
+
+/* ------------------------------------------------------------------
+ * Touch devices: on-screen buttons. A layer fixed to the screen (not scaled with the game) so the buttons keep a
+ * finger friendly size; they sit in the bottom corners (landscape) or under the game (portrait) and never reach
+ * the HUD at the top. Only shown while playing.
+ * ------------------------------------------------------------------ */
+.spiderman-touch {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 0;
+	z-index: 20;
+	--b: clamp(48px, 14vh, 62px);
+	pointer-events: none;
+	touch-action: none;
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: transparent;
+	font-family: SpidermanGamePixelFont, Monospace, Helvetica, Arial;
+}
+
+.spiderman-touch.is-portrait {
+	--b: clamp(52px, 16vw, 72px);
+}
+
+.spiderman-touch-pad,
+.spiderman-touch-actions {
+	position: absolute;
+	bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+	height: calc(var(--b) * 2.7);
+	pointer-events: auto;
+	touch-action: none;
+}
+
+.spiderman-touch-pad {
+	left: calc(10px + env(safe-area-inset-left, 0px));
+	width: calc(var(--b) * 3);
+}
+
+.spiderman-touch-actions {
+	right: calc(10px + env(safe-area-inset-right, 0px));
+	width: calc(var(--b) * 2.7);
+}
+
+.spiderman-touch-btn {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 11px;
+	letter-spacing: 1px;
+	background: rgba(10, 14, 40, 0.42);
+	border: 2px solid rgba(255, 255, 255, 0.35);
+	border-radius: 14px;
+	touch-action: none;
+}
+
+.spiderman-touch-btn small {
+	font-size: 7px;
+	opacity: 0.75;
+	margin-top: 2px;
+}
+
+.spiderman-touch-btn.is-pressed {
+	background: rgba(227, 32, 27, 0.6);
+	border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* d-pad: a cross */
+/* the cross overlaps a little vertically so it stays compact, every button keeps its full size */
+.spiderman-touch-btn.is-up    { left: var(--b); top: 0; width: var(--b); height: var(--b); }
+.spiderman-touch-btn.is-left  { left: 0; top: calc(var(--b) * 0.85); width: var(--b); height: var(--b); }
+.spiderman-touch-btn.is-right { left: calc(var(--b) * 2); top: calc(var(--b) * 0.85); width: var(--b); height: var(--b); }
+.spiderman-touch-btn.is-down  { left: var(--b); top: calc(var(--b) * 1.7); width: var(--b); height: var(--b); }
+
+.spiderman-touch-arrow {
+	width: 0;
+	height: 0;
+	border: calc(var(--b) * 0.16) solid transparent;
+}
+.spiderman-touch-arrow.is-left  { border-right: calc(var(--b) * 0.24) solid rgba(255, 255, 255, 0.85); border-left-width: 0; }
+.spiderman-touch-arrow.is-right { border-left: calc(var(--b) * 0.24) solid rgba(255, 255, 255, 0.85); border-right-width: 0; }
+.spiderman-touch-arrow.is-up    { border-bottom: calc(var(--b) * 0.22) solid rgba(255, 255, 255, 0.85); border-top-width: 0; }
+.spiderman-touch-arrow.is-down  { border-top: calc(var(--b) * 0.22) solid rgba(255, 255, 255, 0.85); border-bottom-width: 0; }
+
+/* actions: a big round JUMP in the corner, WEB next to it, SLIDE above */
+.spiderman-touch-btn.is-jump,
+.spiderman-touch-btn.is-web,
+.spiderman-touch-btn.is-slide {
+	border-radius: 50%;
+}
+.spiderman-touch-btn.is-jump  { right: 0; bottom: 0; width: calc(var(--b) * 1.35); height: calc(var(--b) * 1.35); font-size: 12px; }
+.spiderman-touch-btn.is-web   { right: calc(var(--b) * 1.45); bottom: calc(var(--b) * 0.1); width: calc(var(--b) * 1.1); height: calc(var(--b) * 1.1); }
+.spiderman-touch-btn.is-slide { right: calc(var(--b) * 0.15); bottom: calc(var(--b) * 1.45); width: var(--b); height: var(--b); font-size: 9px; }
+
+/* RESCUE (E): the free corner of the action cluster, left of SLIDE and above WEB. Only in stages with trapped
+   workers; it glows while a worker is within reach */
+.spiderman-touch-btn.is-rescue {
+	display: none;
+	right: calc(var(--b) * 1.5);
+	bottom: calc(var(--b) * 1.45);
+	width: calc(var(--b) * 1.1);
+	height: var(--b);
+	font-size: 8px;
+	letter-spacing: 0;
+	color: rgba(255, 255, 255, 0.6);
+	border-color: rgba(142, 226, 122, 0.35);
+}
+.spiderman-touch.has-rescue .spiderman-touch-btn.is-rescue { display: flex; }
+.spiderman-touch-btn.is-rescue.is-ready {
+	color: #ffffff;
+	background: rgba(63, 165, 52, 0.55);
+	border-color: rgba(142, 226, 122, 0.95);
+	animation: spiderman-touch-ready 0.7s ease-in-out infinite alternate;
+}
+.spiderman-touch-btn.is-rescue.is-pressed { background: rgba(227, 32, 27, 0.6); border-color: rgba(255, 255, 255, 0.9); }
+@keyframes spiderman-touch-ready {
+	from { box-shadow: 0 0 0 0 rgba(142, 226, 122, 0.0); }
+	to   { box-shadow: 0 0 10px 3px rgba(142, 226, 122, 0.7); }
+}
+
+/* portrait: a short line under the game */
+.spiderman-touch-rotate {
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: 19;
+	text-align: center;
+	font-family: SpidermanGamePixelFont, Monospace, Helvetica, Arial;
+	font-size: 10px;
+	letter-spacing: 1px;
+	color: rgba(255, 255, 255, 0.55);
+	pointer-events: none;
 }
